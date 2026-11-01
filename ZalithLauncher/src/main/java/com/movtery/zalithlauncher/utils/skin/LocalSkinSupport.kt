@@ -1,10 +1,12 @@
 package com.movtery.zalithlauncher.utils.skin
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.movtery.zalithlauncher.feature.accounts.AccountType
 import com.movtery.zalithlauncher.feature.accounts.AccountsManager
 import com.movtery.zalithlauncher.feature.log.Logging
@@ -28,6 +30,28 @@ object LocalSkinSupport {
     private const val TAG = "LocalSkinSupport"
     private const val CSL_PROJECT_ID = "idMHQ4n2" // CustomSkinLoader on Modrinth
 
+    // LocalSkin first (instant, no network wait), Mojang second (other players' skins)
+    private const val CSL_CONFIG = """{
+  "enable": true,
+  "enableTransparentSkin": true,
+  "loadlist": [
+    {
+      "name": "LocalSkin",
+      "type": "Legacy",
+      "checkPNG": false,
+      "skin": "LocalSkin/skins/{USERNAME}.png",
+      "model": "auto",
+      "cape": "LocalSkin/capes/{USERNAME}.png",
+      "elytra": "LocalSkin/elytras/{USERNAME}.png"
+    },
+    {
+      "name": "Mojang",
+      "type": "MojangAPI"
+    }
+  ]
+}
+"""
+
     fun importSkin(context: Context, uri: Uri, account: MinecraftAccount): Boolean {
         return runCatching {
             val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
@@ -43,9 +67,20 @@ object LocalSkinSupport {
             val h = opts.outHeight
             if (w < 64 || w % 64 != 0 || (h != w && h != w / 2)) return false
 
+            // Re-encode as a clean 8-bit RGBA PNG (fixes odd PNG formats that render black in game)
+            val decodeOpts = BitmapFactory.Options().apply {
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+                inPremultiplied = false
+            }
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, decodeOpts)
+                ?: return false
+
             val target = File(PathManager.DIR_USER_SKIN, account.uniqueUUID + ".png")
             target.parentFile?.mkdirs()
-            target.writeBytes(bytes)
+            target.outputStream().use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            }
+            bitmap.recycle()
             true
         }.getOrElse {
             Logging.e(TAG, "Failed to import skin: " + Tools.printToString(it))
@@ -67,10 +102,26 @@ object LocalSkinSupport {
             dest.parentFile?.mkdirs()
             skin.copyTo(dest, overwrite = true)
 
+            ensureLocalFirstConfig(File(gameDir, "CustomSkinLoader"))
             ensureSkinMod(version, File(gameDir, "mods"))
         }.onFailure {
             Logging.e(TAG, "Failed to prepare skin: " + Tools.printToString(it))
         }
+    }
+
+    private fun ensureLocalFirstConfig(dir: File) {
+        val config = File(dir, "CustomSkinLoader.json")
+        if (config.exists()) {
+            val alreadyGood = runCatching {
+                val root = JsonParser().parse(config.readText()).asJsonObject
+                val first = root.getAsJsonArray("loadlist")?.get(0)?.asJsonObject?.get("name")?.asString
+                first == "LocalSkin"
+            }.getOrDefault(false)
+            if (alreadyGood) return
+            runCatching { config.copyTo(File(dir, "CustomSkinLoader.json.bak"), overwrite = true) }
+        }
+        dir.mkdirs()
+        config.writeText(CSL_CONFIG)
     }
 
     private fun ensureSkinMod(version: Version, modsDir: File) {
@@ -129,7 +180,6 @@ object LocalSkinSupport {
         val target = File(modsDir, file.get("filename").asString)
         if (!target.exists()) {
             DownloadUtils.downloadFile(file.get("url").asString, target)
-            
         }
     }
 }
