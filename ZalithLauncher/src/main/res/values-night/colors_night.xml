@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- CHANGE THIS ONE LINE TO RECOLOR THE WHOLE LAUNCHER (dark mode) -->
-    <color name="accent">#5B9BFF</color>
+    <color name="accent">#FF8A1F</color>
 
     <color name="black_or_white">#FFFFFF</color>
 
