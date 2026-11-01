@@ -53,7 +53,7 @@ class LaunchGame {
 
             fun launch(setOfflineAccount: Boolean = false) {
                 version.offlineAccountLogin = setOfflineAccount
-
+                com.movtery.zalithlauncher.utils.skin.LocalSkinSupport.prepare(version)
                 val versionName = version.getVersionName()
                 val mcVersion = AsyncMinecraftDownloader.getListedVersion(versionName)
                 val listener = ContextAwareDoneListener(context, version)
