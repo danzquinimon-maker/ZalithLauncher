@@ -60,6 +60,9 @@ object ModrinthDependencyInstaller {
             version.modloaders.forEach { if (it.modrinthName.isNotBlank()) loaders.add(it.modrinthName) }
         }
 
+        // Projects already installed in the mods folder (identified by file hash)
+        val installed = installedProjectIds(api, modsDir)
+
         val visited = HashSet<String>()
         visited.add(version.projectId)
         val queue = ArrayDeque<String>()
@@ -68,6 +71,10 @@ object ModrinthDependencyInstaller {
         while (queue.isNotEmpty()) {
             val projectId = queue.removeFirst()
             if (!visited.add(projectId)) continue
+            if (projectId in installed) {
+                Logging.i(TAG, "Dependency $projectId already installed, skipping")
+                continue
+            }
 
             val chosen = pickVersion(api, projectId, mcVersion, loaders)
             if (chosen == null) {
@@ -98,6 +105,47 @@ object ModrinthDependencyInstaller {
                 if (type == "required" && id != null && !id.isJsonNull) queue.add(id.asString)
             }
         }
+    }
+
+    private fun installedProjectIds(api: ApiHandler, modsDir: File): Set<String> {
+        val jars = modsDir.listFiles()?.filter {
+            it.isFile && (it.name.endsWith(".jar") || it.name.endsWith(".jar.disabled"))
+        } ?: return emptySet()
+        if (jars.isEmpty()) return emptySet()
+
+        val hashes = JsonArray()
+        for (jar in jars) {
+            runCatching { hashes.add(sha1Of(jar)) }
+        }
+        if (hashes.size() == 0) return emptySet()
+
+        val body = JsonObject()
+        body.add("hashes", hashes)
+        body.addProperty("algorithm", "sha1")
+
+        val response = runCatching {
+            api.post("version_files", body, JsonObject::class.java)
+        }.getOrNull() ?: return emptySet()
+
+        val ids = HashSet<String>()
+        for (entry in response.entrySet()) {
+            val id = entry.value.asJsonObject.get("project_id")
+            if (id != null && !id.isJsonNull) ids.add(id.asString)
+        }
+        return ids
+    }
+
+    private fun sha1Of(file: File): String {
+        val digest = java.security.MessageDigest.getInstance("SHA-1")
+        file.inputStream().use { input ->
+            val buffer = ByteArray(8192)
+            while (true) {
+                val read = input.read(buffer)
+                if (read < 0) break
+                digest.update(buffer, 0, read)
+            }
+        }
+        return digest.digest().joinToString("") { "%02x".format(it) }
     }
 
     private fun pickVersion(
