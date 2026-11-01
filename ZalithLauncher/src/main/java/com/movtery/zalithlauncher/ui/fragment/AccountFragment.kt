@@ -137,7 +137,13 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val context = requireActivity()
-
+        binding.viewAccount.userIcon.setOnClickListener {
+            if (AccountsManager.currentAccount?.accountType == com.movtery.zalithlauncher.feature.accounts.AccountType.LOCAL.type) {
+                skinPicker.launch("image/png")
+            } else {
+                Toast.makeText(context, "Skins can only be set on offline accounts", Toast.LENGTH_SHORT).show()
+            }
+        }
         mAccountAdapter.setAccountUpdateListener(object : AccountUpdateListener {
             override fun onViewClick(account: MinecraftAccount) {
                 selectAccountListener.onSelect(account)
