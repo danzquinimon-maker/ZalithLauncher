@@ -107,7 +107,23 @@ class AccountFragment : FragmentWithAnim(R.layout.fragment_account), View.OnClic
     private val mOtherServerViewList: MutableList<View> = ArrayList()
 
     private lateinit var mProgressDialog: AlertDialog
-
+    private val skinPicker = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.GetContent()
+    ) { uri ->
+        val account = AccountsManager.currentAccount
+        if (uri != null && account != null) {
+            val ok = com.movtery.zalithlauncher.utils.skin.LocalSkinSupport.importSkin(requireContext(), uri, account)
+            Toast.makeText(
+                requireContext(),
+                if (ok) "Skin updated" else "Not a valid skin PNG (64x64 or 64x32)",
+                Toast.LENGTH_SHORT
+            ).show()
+            if (ok) {
+                mAccountViewWrapper.refreshAccountInfo()
+                reloadRecyclerView()
+            }
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
