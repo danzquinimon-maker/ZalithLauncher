@@ -3,6 +3,8 @@ package com.movtery.zalithlauncher.feature.download.platform.modrinth
 import com.movtery.zalithlauncher.feature.download.Filters
 import com.movtery.zalithlauncher.feature.download.enums.Classify
 import com.movtery.zalithlauncher.feature.download.install.InstallHelper
+import com.movtery.zalithlauncher.feature.download.install.ModrinthDependencyInstaller
+import com.movtery.zalithlauncher.feature.download.item.ModVersionItem
 import com.movtery.zalithlauncher.feature.download.item.InfoItem
 import com.movtery.zalithlauncher.feature.download.item.ModLoaderWrapper
 import com.movtery.zalithlauncher.feature.download.item.ScreenshotItem
@@ -52,7 +54,7 @@ class ModrinthHelper : AbstractPlatformHelper(ApiHandler("https://api.modrinth.c
 
     @Throws(Throwable::class)
     override fun searchWorld(filters: Filters, lastResult: SearchResult): SearchResult? {
-        throw PlatformNotSupportedException("Modrinth does not provide archive download support.") //Modrinth不提供MC存档
+        throw PlatformNotSupportedException("Modrinth does not provide archive download support.")
     }
 
     @Throws(Throwable::class)
@@ -77,7 +79,7 @@ class ModrinthHelper : AbstractPlatformHelper(ApiHandler("https://api.modrinth.c
 
     @Throws(Throwable::class)
     override fun getWorldVersions(infoItem: InfoItem, force: Boolean): List<VersionItem>? {
-        throw PlatformNotSupportedException("Modrinth does not provide archive download support.") //Modrinth不提供MC存档
+        throw PlatformNotSupportedException("Modrinth does not provide archive download support.")
     }
 
     @Throws(Throwable::class)
@@ -88,6 +90,9 @@ class ModrinthHelper : AbstractPlatformHelper(ApiHandler("https://api.modrinth.c
     @Throws(Throwable::class)
     override fun installMod(infoItem: InfoItem, version: VersionItem, targetPath: File, progressKey: String) {
         InstallHelper.downloadFile(version, targetPath, progressKey)
+        if (version is ModVersionItem) {
+            targetPath.parentFile?.let { ModrinthDependencyInstaller.installRequired(api, version, it) }
+        }
     }
 
     @Throws(Throwable::class)
