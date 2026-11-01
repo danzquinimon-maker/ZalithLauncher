@@ -71,8 +71,31 @@ public class ApiHandler {
             conn.disconnect();
             return data;
         } catch (FileNotFoundException e) {
-            Logging.d("ApiHandler", "File Not Found! " + Tools.printToString(e));
-            return null;
+            int status = -1;
+            String errorBody = "";
+
+            try {
+                if (conn != null) {
+                    status = conn.getResponseCode();
+                    InputStream errorStream = conn.getErrorStream();
+
+                    if (errorStream != null) {
+                        errorBody = Tools.read(errorStream);
+                        errorStream.close();
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+
+            Logging.e("ApiHandler",
+                    "CurseForge HTTP error: " + status + " - " + errorBody);
+
+            if (conn != null) {
+                conn.disconnect();
+            }
+
+            throw new RuntimeException(
+                    "CurseForge HTTP " + status + ": " + errorBody, e);
         } catch(InterruptedIOException e) {
             Logging.d("ApiHandler", "The connection has been interrupted, or has been canceled.\n" + Tools.printToString(e));
             return null;
