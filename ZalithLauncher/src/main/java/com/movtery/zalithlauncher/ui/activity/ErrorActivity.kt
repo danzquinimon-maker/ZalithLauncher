@@ -35,7 +35,9 @@ class ErrorActivity : BaseActivity() {
             startActivity(Intent(this@ErrorActivity, SplashActivity::class.java))
         }
         binding.shareLog.setOnClickListener { ZHTools.shareLogs(this) }
-
+        binding.analyzeCrash.setOnClickListener {
+    analyzeCrash()
+        }
         if (extras.getBoolean(BUNDLE_IS_LAUNCHER_CRASH, false)) {
             showLauncherCrash(extras)
             return
