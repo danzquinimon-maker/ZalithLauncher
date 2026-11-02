@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark mode orange theme -->
+    <!-- CHANGE THIS ONE LINE TO RECOLOR THE WHOLE LAUNCHER (dark mode) -->
     <color name="accent">#FF8A1F</color>
 
     <color name="black_or_white">#FFFFFF</color>
@@ -12,12 +12,10 @@
     <color name="background_menu_top">#1C1C1C</color>
     <color name="background_menu_top_error">#E62E0909</color>
     <color name="background_menu_element">@color/accent</color>
-    <color name="background_ripple_effect">#DCDCDC</color>
+    <color name="background_ripple_effect">#FFD2A6</color>
 
-    <!-- Orange buttons -->
-    <color name="button_background">#D96B16</color>
-    <color name="button_background_selected">#FF8A1F</color>
-
+    <color name="button_background">#E8780F</color>
+    <color name="button_background_selected">#FFA040</color>
     <color name="dialog_background">#1E1E1E</color>
 
     <color name="menu_bar">#2C2C2C</color>
@@ -25,7 +23,7 @@
     <color name="menu_progress">@color/accent</color>
 
     <color name="background_item">#1E1E1E</color>
-    <color name="background_item_selected">#2B3342</color>
+    <color name="background_item_selected">#3A2A1A</color>
     <color name="background_item_disabled">#3A2222</color>
     <color name="background_sponsor_intermediate">#80BD6C2D</color>
     <color name="background_sponsor_advanced">#80B83C1F</color>
@@ -39,5 +37,6 @@
     <color name="settings_category">@color/accent</color>
 
     <color name="icon_color">#FFFFFF</color>
-    <color name="primary_text">#F2F2F2</color>
+
+    <color name="primary_text">#FFFFFF</color>
 </resources>
