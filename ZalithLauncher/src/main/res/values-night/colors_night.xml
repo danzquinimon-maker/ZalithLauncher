@@ -1,6 +1,7 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- CHANGE THIS ONE LINE TO RECOLOR THE WHOLE LAUNCHER (dark mode) -->
+    <!-- Dark mode orange theme -->
     <color name="accent">#FF8A1F</color>
 
     <color name="black_or_white">#FFFFFF</color>
@@ -14,8 +15,10 @@
     <color name="background_menu_element">@color/accent</color>
     <color name="background_ripple_effect">#DCDCDC</color>
 
-    <color name="button_background">#2C2C2C</color>
-    <color name="button_background_selected">#444444</color>
+    <!-- Orange buttons -->
+    <color name="button_background">#D96B16</color>
+    <color name="button_background_selected">#FF8A1F</color>
+
     <color name="dialog_background">#1E1E1E</color>
 
     <color name="menu_bar">#2C2C2C</color>
@@ -39,4 +42,5 @@
     <color name="icon_color">#FFFFFF</color>
 
     <color name="primary_text">#F2F2F2</color>
-</resources>
+
+                                                 </resources>
