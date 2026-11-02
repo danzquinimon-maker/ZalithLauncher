@@ -63,6 +63,8 @@ jobs:
 
   BuildDebug:
     if: startsWith(github.ref, 'refs/pull/') || github.ref_name != 'main'
+        env:
+      CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
     runs-on: ubuntu-22.04
     strategy:
       matrix:
