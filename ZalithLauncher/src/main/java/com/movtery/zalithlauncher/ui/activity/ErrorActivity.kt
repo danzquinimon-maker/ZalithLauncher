@@ -63,7 +63,7 @@ class ErrorActivity : BaseActivity() {
         val stackTrace = if (throwable != null) Tools.printToString(throwable) else "<null>"
         val strSavePath = extras.getString(BUNDLE_SAVE_PATH)
         val errorText = "$strSavePath :\r\n\r\n$stackTrace"
-
+        launcherCrashLog = stackTrace
         binding.apply {
             this.errorTitle.text = InfoCenter.replaceName(context, R.string.error_fatal)
             this.errorText.text = errorText
