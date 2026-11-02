@@ -10,6 +10,10 @@ import com.movtery.zalithlauncher.InfoCenter
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.databinding.ActivityErrorBinding
 import com.movtery.zalithlauncher.utils.ZHTools
+import com.movtery.zalithlauncher.feature.log.CrashAnalyzer
+import com.movtery.zalithlauncher.utils.path.PathManager
+import java.io.File
+import java.io.RandomAccessFile
 import net.kdt.pojavlaunch.Tools
 
 class ErrorActivity : BaseActivity() {
