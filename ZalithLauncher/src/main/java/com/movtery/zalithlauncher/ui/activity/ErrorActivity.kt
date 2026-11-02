@@ -112,7 +112,57 @@ class ErrorActivity : BaseActivity() {
             this.background.setBackgroundResource(R.drawable.image_xibao)
         }
     }
+    private var launcherCrashLog: String? = null
 
+    private fun analyzeCrash() {
+        val logText = launcherCrashLog ?: run {
+            val logFile = File(PathManager.DIR_GAME_HOME, "latestlog.txt")
+
+            if (!logFile.exists()) {
+                binding.errorText.text =
+                    "No game log found. Try sharing your logs."
+                return
+            }
+
+            try {
+                RandomAccessFile(logFile, "r").use { file ->
+                    val length = file.length()
+                    val start = (length - 2L * 1024 * 1024).coerceAtLeast(0)
+                    file.seek(start)
+
+                    ByteArray((length - start).toInt()).also {
+                        file.readFully(it)
+                    }.toString(Charsets.UTF_8)
+                }
+            } catch (e: Exception) {
+                binding.errorText.text =
+                    "Could not read the crash log: ${e.message}"
+                return
+            }
+        }
+
+        val report = CrashAnalyzer.analyze(logText)
+
+        binding.errorText.text = buildString {
+            appendLine("CRASH ANALYSIS")
+            appendLine()
+            appendLine(report.summary)
+            appendLine()
+
+            if (report.hasFindings) {
+                report.findings.forEachIndexed { index, finding ->
+                    appendLine("${index + 1}. ${finding.title}")
+                    appendLine(finding.explanation)
+                    appendLine("Suggested fix: ${finding.suggestedFix}")
+                    appendLine("Log evidence: ${finding.matchedText}")
+                    appendLine()
+                }
+            } else {
+                appendLine("No recognized error pattern was found.")
+                appendLine("Share the logs for further investigation.")
+            }
+        }
+    }
     companion object {
         private const val BUNDLE_IS_LAUNCHER_CRASH = "is_launcher_crash"
         private const val BUNDLE_IS_GAME_CRASH = "is_game_crash"
