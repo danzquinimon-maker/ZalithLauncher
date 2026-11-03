@@ -18,9 +18,11 @@ open class AnimButton @JvmOverloads constructor(
 ) : AppCompatButton(context, attrs, defStyleAttr) {
     init {
         isAllCaps = false
+        setTextColor(ContextCompat.getColor(context, R.color.primary_text))
+        minHeight = Tools.dpToPx(40f)
         setRipple()
         stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.xml.anim_scale)
-        translationZ = Tools.dpToPx(4f)
+        translationZ = Tools.dpToPx(2f)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {

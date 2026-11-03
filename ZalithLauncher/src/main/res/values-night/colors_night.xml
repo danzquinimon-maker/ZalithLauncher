@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="accent">#86A8FF</color>
+    <color name="accent">#8EAEFF</color>
     <color name="black_or_white">#F0F3FA</color>
-    <color name="background_app">#111827</color>
+    <color name="background_app">#0D1524</color>
     <color name="background_app_error">#3B2025</color>
-    <color name="background_overlay">#263247</color>
-    <color name="background_status_bar">#111827</color>
-    <color name="background_menu_top">#172238</color>
+    <color name="background_overlay">#202D43</color>
+    <color name="background_status_bar">#0D1524</color>
+    <color name="background_menu_top">#121E33</color>
     <color name="background_menu_top_error">#8F3038</color>
-    <color name="background_menu_element">#86A8FF</color>
-    <color name="background_ripple_effect">#43516A</color>
-    <color name="button_background">#263247</color>
-    <color name="button_background_selected">#344665</color>
-    <color name="dialog_background">#1B2638</color>
-    <color name="menu_bar">#172238</color>
+    <color name="background_menu_element">#8EAEFF</color>
+    <color name="background_ripple_effect">#60728F</color>
+    <color name="button_background">#202D43</color>
+    <color name="button_background_selected">#2B3D5A</color>
+    <color name="dialog_background">#172337</color>
+    <color name="menu_bar">#121E33</color>
     <color name="menu_bar_text">#F0F3FA</color>
-    <color name="menu_overlay">#E6202D42</color>
-    <color name="menu_progress">#86A8FF</color>
-    <color name="background_item">#1B2638</color>
-    <color name="background_item_selected">#2B3D5D</color>
+    <color name="menu_overlay">#E6121E32</color>
+    <color name="menu_progress">#8EAEFF</color>
+    <color name="background_item">#172337</color>
+    <color name="background_item_selected">#263956</color>
     <color name="background_item_disabled">#39272D</color>
     <color name="background_sponsor_intermediate">#493A25</color>
     <color name="background_sponsor_advanced">#49302B</color>
-    <color name="edit_box_fill">#263247</color>
-    <color name="edit_box_fill_selected">#344665</color>
-    <color name="mod_category_fill">#263247</color>
-    <color name="text_background_fill">#263247</color>
-    <color name="settings_category">#86A8FF</color>
+    <color name="edit_box_fill">#1C2A40</color>
+    <color name="edit_box_fill_selected">#263956</color>
+    <color name="mod_category_fill">#202D43</color>
+    <color name="text_background_fill">#202D43</color>
+    <color name="settings_category">#8EAEFF</color>
     <color name="favorite_color">#FF8290</color>
     <color name="icon_color">#D5DDF0</color>
     <color name="primary_text">#F0F3FA</color>
 </resources>
-        

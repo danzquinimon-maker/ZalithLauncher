@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.skydoves.powerspinner.OnSpinnerItemSelectedListener
 import com.skydoves.powerspinner.PowerSpinnerInterface
 import com.skydoves.powerspinner.PowerSpinnerView
 import com.skydoves.powerspinner.databinding.PowerspinnerItemDefaultPowerBinding
+import com.movtery.zalithlauncher.R
 
 /**
  * 改自 [com.skydoves.powerspinner.DefaultSpinnerAdapter]
@@ -97,12 +99,15 @@ class ObjectSpinnerAdapter<T>(
                 spinnerView.paddingBottom
             )
             if (spinnerView.spinnerItemHeight != NO_INT_VALUE) {
-                binding.root.height = spinnerView.spinnerItemHeight
+                binding.root.layoutParams = binding.root.layoutParams.apply {
+                    height = spinnerView.spinnerItemHeight
+                }
             }
-            if (spinnerView.spinnerSelectedItemBackground != null && isSelectedItem) {
-                binding.root.background = spinnerView.spinnerSelectedItemBackground
+            binding.root.background = if (isSelectedItem) {
+                spinnerView.spinnerSelectedItemBackground
+                    ?: ContextCompat.getDrawable(spinnerView.context, R.drawable.background_spinner_item_selected)
             } else {
-                binding.root.background = null
+                ContextCompat.getDrawable(spinnerView.context, R.drawable.background_spinner_item_unselected)
             }
         }
     }
