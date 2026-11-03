@@ -1,5 +1,9 @@
 package com.movtery.zalithlauncher.ui.subassembly.view
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.view.View
 import android.widget.TextView
@@ -35,6 +39,7 @@ class GameMenuViewWrapper(
     private var visible: Boolean = false
 
     private var scopeFx: IFxScopeControl? = null
+    private var gearIcon: View? = null
 
     init {
         refreshState()
@@ -43,21 +48,46 @@ class GameMenuViewWrapper(
     private fun getWindow(): IFxScopeControl {
         return FxScopeHelper.Builder().apply {
             setLayout(R.layout.view_game_menu_window)
-            setOnClickListener(0L, listener)
+            setOnClickListener(0L, View.OnClickListener { clickedView ->
+                animateGearIcon()
+                listener.onClick(clickedView)
+            })
             setEnableEdgeAdsorption(false)
             addViewLifecycle(object : IFxViewLifecycle {
                 override fun initView(holder: FxViewHolder) {
                     holder.view.alpha = AllSettings.gameMenuAlpha.getValue().toFloat() / 100f
-
+                    gearIcon = holder.view.findViewById(R.id.settings_button)
                     updateInfoText(holder.view)
                 }
 
                 override fun detached(view: View) {
                     cancelInfoTimer()
+                    gearIcon = null
                 }
             })
             setGravity(getCurrentGravity())
         }.build().toControl(activity)
+    }
+
+    private fun animateGearIcon() {
+        val gear = gearIcon ?: return
+        gear.animate().cancel()
+        gear.isSelected = true
+
+        AnimatorSet().apply {
+            duration = 220L
+            playTogether(
+                ObjectAnimator.ofFloat(gear, View.ROTATION, 0f, 35f, 0f),
+                ObjectAnimator.ofFloat(gear, View.SCALE_X, 1f, 0.9f, 1f),
+                ObjectAnimator.ofFloat(gear, View.SCALE_Y, 1f, 0.9f, 1f)
+            )
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    gear.isSelected = false
+                }
+            })
+            start()
+        }
     }
 
     private fun startNewbieGuide(mainView: View) {
@@ -99,6 +129,7 @@ class GameMenuViewWrapper(
         } else {
             scopeFx?.cancel()
             scopeFx = null
+            gearIcon = null
             cancelInfoTimer()
         }
     }
